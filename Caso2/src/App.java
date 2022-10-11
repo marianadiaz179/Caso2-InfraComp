@@ -22,7 +22,7 @@ public class App {
 
         
         //Lee el archivo
-        BufferedReader buffer = new BufferedReader(new FileReader("./data/" + nombreArchivo));
+        BufferedReader buffer = new BufferedReader(new FileReader("C:/Users/maria/Downloads/Caso2-InfraComp/Caso2/data/" + nombreArchivo));
 
         String linea = buffer.readLine();
         ArrayList<Integer> lista = new ArrayList<>();
