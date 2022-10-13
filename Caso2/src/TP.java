@@ -37,6 +37,10 @@ public class TP {
 
             // Eliminar la pagina del marco menos usado
             referencias.remove(paginaEliminar);
+            System.out.println("Se ha eliminado la referencia de la página " + paginaEliminar + " en el marco " + marcoMenosUsado);
+
+            //Eliminar la pagina de la TLB
+            tlb.eliminarReferencia(paginaEliminar);
 
             // Agregar la nueva referencia al marco que se ha eliminado de la TLB
             referencias.put(referencia, marcoMenosUsado);

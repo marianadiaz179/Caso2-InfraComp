@@ -38,4 +38,10 @@ public class TLB {
         colaOrden.add(referencia);
     }
 
+    public synchronized void eliminarReferencia(int referencia)
+    {
+        if (referencias.containsKey(referencia)) {
+            referencias.remove(referencia);
+        }
+    }
 }

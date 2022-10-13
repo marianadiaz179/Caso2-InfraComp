@@ -10,8 +10,9 @@ public class RAM {
     private ArrayList<Integer> listaReferencias;
 
     // Estructuras para el aging
-    private HashMap<Integer, Integer[]> paginasBits = new HashMap<Integer, Integer[]>();
+    private HashMap<Integer, Long> bitsMarcos = new HashMap<>();
 
+    //constructor
     public RAM(int num, ArrayList<Integer> lista) {
         this.numMarcos = num;
         this.listaReferencias = lista;
@@ -21,10 +22,11 @@ public class RAM {
         }
         this.marcosOcupados = new ArrayList<>();
         this.ajustarBits();
-        this.nuevaReferencia = -1;
+        this.nuevaReferencia = -2;
 
     }
 
+    //getters y setters
     public int getMarcoMenosUsado() {
         return marcoMenosUsado;
     }
@@ -49,6 +51,7 @@ public class RAM {
         this.nuevaReferencia = nuevaReferencia;
     }
 
+    // retorna un marco que esté disponible para la creación de una referenci aen la TP
     public Integer darMarcoDisponible() {
         Integer marcoDisponible = -1;
         marcoDisponible = marcosDisponibles.get(0);
@@ -56,6 +59,7 @@ public class RAM {
         return marcoDisponible;
     }
 
+    //actualiza los marcos cuando se realiza una referencia
     public void actualizarMarcos(Integer marco) {
         for (int i = 0; i < marcosDisponibles.size(); i++) {
             if (marcosDisponibles.get(i) == marco) {
@@ -65,83 +69,63 @@ public class RAM {
         }
     }
 
-    // Algpritmo que ejecuta el aging
+    //algoritmo de aging
     public synchronized void algoritmoEnvejecimiento(Integer referencia) {
 
-        Integer maximo = -1;
+        System.out.println("EL BIT REFERENCIADO ES " + referencia);
+        System.out.println(referencia != -2);
+        if (referencia != -2) {
 
-        for (Integer pagina : paginasBits.keySet()) {
-            if (pagina != referencia) {
-                envejecerBitsNoReferenciados(pagina);
-            } else {
-                envejecerBitsReferenciados(referencia);
+            long maximo = -1;
+
+            for (Integer marco : bitsMarcos.keySet()) {
+
+                long bitsReferenciados = bitsMarcos.get(marco);
+                bitsMarcos.replace(marco, bitsReferenciados >> 1);
+                System.out.println("Se han envejecido el marco " + marco);
+                if (marco == referencia) {
+                    long nuevaReferencia = (long) Math.pow(2, 32);
+                    long bitsReferencia = bitsMarcos.get(referencia);
+                    bitsMarcos.replace(referencia, bitsReferencia | nuevaReferencia);
+                    System.out.println("Se han envejcido el marco referenciado " + marco);
+                }
+                long maximoLocal = bitsMarcos.get(marco);
+
+                if (maximoLocal > maximo) {
+                    maximo = maximoLocal;
+                    this.marcoMenosUsado = marco;
+                }
+
             }
-        }
+        } else if (referencia == -2) {
+            long maximo = -1;
 
-        for (Integer pagina : paginasBits.keySet()) {
-            Integer maximoLocal = posicionReferencia(referencia);
+            for (Integer marco : bitsMarcos.keySet()) {
 
-            if (maximoLocal > maximo) {
-                maximo = maximoLocal;
-                marcoMenosUsado = pagina;
+                long bitsReferenciados = bitsMarcos.get(marco);
+                bitsMarcos.replace(marco, bitsReferenciados >> 1);
+                System.out.println("Se han envejecido el marco " + marco);
+                
+                long maximoLocal = bitsMarcos.get(marco);
+
+                if (maximoLocal > maximo) {
+                    maximo = maximoLocal;
+                    this.marcoMenosUsado = marco;
+                }
+
             }
-
         }
 
     }
 
+    
     // Ajustar inicio de los bits
     public void ajustarBits() {
-        Integer[] bits0 = new Integer[32];
-        for (int k = 0; k < 32; k++) {
-            bits0[k] = 0;
-        }
+        long bits0 = 0;
         for (int i = 0; i < numMarcos; i++) {
-            paginasBits.put(i, bits0);
+            bitsMarcos.put(i,bits0);
         }
     }
 
-    // Envejece los bits que no están siendo referenciados
-    public void envejecerBitsNoReferenciados(Integer referencia) {
-        Integer[] resultado = new Integer[32];
-        Integer[] bitsActuales = paginasBits.get(referencia);
-
-        for (int i = 0; i < 32; i++) {
-            resultado[i + 1] = bitsActuales[i];
-        }
-
-        resultado[0] = 0;
-
-        paginasBits.replace(referencia, resultado);
-    }
-
-    // Envejece los bits que fueron referenciados
-    public void envejecerBitsReferenciados(Integer referencia) {
-        Integer[] resultado = new Integer[32];
-        Integer[] bitsActuales = paginasBits.get(referencia);
-
-        for (int i = 0; i < 32; i++) {
-            resultado[i + 1] = bitsActuales[i];
-        }
-
-        resultado[0] = 1;
-
-        paginasBits.replace(referencia, resultado);
-    }
-
-    // Determina la posición en la que aparece el primer uno (ultima referencia)
-    public Integer posicionReferencia(Integer referencia) {
-        Integer[] bitsReferencia = paginasBits.get(referencia);
-        Integer posicion = 0;
-
-        for (int i = 0; i < 32; i++) {
-            if (bitsReferencia[i] == 1) {
-                posicion = i;
-                break;
-            }
-        }
-
-        return posicion;
-    }
-
+   
 }

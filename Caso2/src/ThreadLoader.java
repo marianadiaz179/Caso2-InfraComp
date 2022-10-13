@@ -6,6 +6,11 @@ public class ThreadLoader extends Thread {
     private TP tp;
     private ArrayList<Integer> referencias;
 
+    //variables contador
+    private long direcciones;
+    private long datos;
+
+
     public ThreadLoader(RAM r, TLB t, TP tp) {
         this.ram = r;
         this.tlb = t;
@@ -30,6 +35,8 @@ public class ThreadLoader extends Thread {
                 if((tp.buscarReferencia(referencia))==-1)
                 {
                     System.out.println("No se ha encontrado la página en la TP");
+                    this.direcciones += 60;
+                    this.datos += 10000000;
                     System.out.println("Agregando la página a la TP");
                     try {
                         tp.agregarReferencia(referencia);
@@ -44,6 +51,8 @@ public class ThreadLoader extends Thread {
 
                     Integer marco = tp.buscarReferencia(referencia);
                     System.out.println("Se ha encontrado la pagina " + referencia + " en el marco de RAM " + marco);
+                    this.direcciones += 30;
+                    this.datos += 30;
                     try {
                         tlb.agregarReferencia(referencia, marco);
                         System.out.println("Se ha agregado la pagina " + referencia + " a la TLB");
@@ -54,9 +63,12 @@ public class ThreadLoader extends Thread {
             
             }
             else{
+                this.direcciones += 2;
+                this.datos += 30;
                 System.out.println("Se ha encontrado la página en la TLB");
             }
-            ram.setNuevaReferencia(referencia);
+            ram.setNuevaReferencia(tp.buscarReferencia(referencia));
+            System.out.println(ram.getNuevaReferencia());
 
             // eliminar referencia recien visitada
             referencias.remove(0);
@@ -68,6 +80,13 @@ public class ThreadLoader extends Thread {
                 Thread.sleep(2);
             } catch (Exception e) {}
         }
+
+        ram.setNuevaReferencia(-1);
+
+        System.out.println("El tiempo de traducción de direcciones es " + direcciones);
+        System.out.println("El tiempo de carga de datos es : " + datos);
     }
+
+    
 
 }

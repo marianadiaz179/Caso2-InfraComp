@@ -11,10 +11,11 @@ public class ThreadAging extends Thread {
     public void run() {
 
         while(ram.getNuevaReferencia() != -1)
-        {
+        {   
+            System.out.println("Aging");
             Integer referencia = ram.getNuevaReferencia();
             ram.algoritmoEnvejecimiento(referencia);
-            ram.setNuevaReferencia(-1);
+            ram.setNuevaReferencia(-2);
             try {
                 Thread.sleep(1);
             } catch (Exception e) {}
