@@ -12,11 +12,11 @@ public class TLB {
         this.colaOrden = new ArrayList<Integer>();
     }
 
-    public synchronized boolean buscarReferencia(int referencia) {
-        boolean respuesta = false;
+    public synchronized int buscarReferencia(int referencia) {
+        int respuesta = -1;
 
         if (referencias.containsKey(referencia)) {
-            respuesta = true;
+            respuesta = referencias.get(referencia);
         }
 
         return respuesta;

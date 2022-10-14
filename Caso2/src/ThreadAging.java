@@ -13,9 +13,7 @@ public class ThreadAging extends Thread {
         while(ram.getNuevaReferencia() != -1)
         {   
             System.out.println("Aging");
-            Integer referencia = ram.getNuevaReferencia();
-            ram.algoritmoEnvejecimiento(referencia);
-            ram.setNuevaReferencia(-2);
+            ram.algoritmoEnvejecimiento();
             try {
                 Thread.sleep(1);
             } catch (Exception e) {}

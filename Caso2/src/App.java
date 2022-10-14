@@ -37,12 +37,12 @@ public class App {
         buffer.close();
 
         //Estructuras
-        RAM RAM = new RAM(marcosPaginasRAM, lista);
         TLB TLB = new TLB(entradasTLB);
-        TP TP = new TP(RAM,TLB);
+        TP TP = new TP(TLB);
+        RAM RAM = new RAM(marcosPaginasRAM, TLB, TP);
         ThreadAging envejecimiento = new ThreadAging(RAM);
         envejecimiento.start();
-        ThreadLoader cargador = new ThreadLoader(RAM, TLB,TP);
+        ThreadLoader cargador = new ThreadLoader(RAM, lista);
         cargador.start();
 
 
