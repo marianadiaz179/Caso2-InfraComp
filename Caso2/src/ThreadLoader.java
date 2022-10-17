@@ -13,15 +13,17 @@ public class ThreadLoader extends Thread {
     @Override
     public void run() {
         
+        // Se repite mientras todavia existan  referencias por cargar
         while (this.referencias.size() != 0) {
-            System.out.println(ram.getNuevaReferencia());
+    
             //Referencia a analizar
             Integer referencia = referencias.get(0);
-            //System.out.println("Buscando la página " + referencia + " en la TLB");
-
+            //carga cada referencia que entra en el archivo
             ram.cargarReferencia(referencia);
+            //Elimina la referencia de la lista porque ya fue realizada
             referencias.remove(0);
 
+            //Tiempo que espera para volver a ejecutarse
             try {
                 Thread.sleep(2);
             } catch (Exception e) {}
@@ -29,9 +31,13 @@ public class ThreadLoader extends Thread {
 
         ram.setNuevaReferencia(-1);
 
-        System.out.println("El tiempo de traducción de direcciones es " + ram.getDirecciones());
-        System.out.println("El tiempo de carga de datos es : " + ram.getDatos());
-        System.out.println("Num Fallas: " + ram.getNumFallas());
+        System.out.println("\n");
+        System.out.println("************************************************************************");
+        System.out.println(" ------- El tiempo de traducción de direcciones es " + ram.getDirecciones() + " ns ------- ");
+        System.out.println(" ------- El tiempo de carga de datos es : " + ram.getDatos()+ " ns ------- ");
+        System.out.println(" ------- Num Fallas: " + ram.getNumFallas()+ " ------- ");
+        System.out.println("************************************************************************");
+
     }
 
     

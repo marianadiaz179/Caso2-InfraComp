@@ -66,8 +66,7 @@ public class RAM {
         this.marcoMenosUsado = marcoMenosUsado;
     }
 
-    // retorna un marco que esté disponible para la creación de una referenci aen la
-    // TP
+    // retorna un marco que esté disponible para la creación de una referencia en la TP
     public Integer darMarcoDisponible() {
         Integer marcoDisponible = -1;
         marcoDisponible = marcosDisponibles.get(0);
@@ -88,34 +87,29 @@ public class RAM {
     // algoritmo de aging
     public synchronized void algoritmoEnvejecimiento() {
         
-
+        // se inicializa un valor grande para ser reemplazado por el mínimo
         long minimo = (long) Math.pow(2, 33);
-
+        //Itera para envejecer todos los bits de los marcos
         for (Integer marco : bitsMarcos.keySet()) {
-
+            //Recupera la información actual y la cambia por el corrimiento de bits
             long bitsReferenciados = bitsMarcos.get(marco);
             bitsMarcos.replace(marco, bitsReferenciados >> 1);
+            //Si hay un marco que acaba de ser referenciado se corre con un 1
             if (marco == nuevaReferencia) {
                 long nuevos = (long) Math.pow(2, 32);
                 long bitsReferencia = bitsMarcos.get(marco);
                 bitsMarcos.replace(marco, bitsReferencia | nuevos);
-
             }
             long minimoLocal = bitsMarcos.get(marco);
             
+            //Busca el menor de acuerdo al que ha sido menos referenciado
             if (minimoLocal < minimo) {
                 minimo = minimoLocal;
-                System.out.println(marco + " " + minimo);
+                //Actualiza el marco menos usado que será el próximo reemplazado al entrar una referencia nueva
                 setMarcoMenosUsado(marco);
             }
-
         }
-
-        System.out.println("Marco menos usado:  " + marcoMenosUsado);
-
-        
-        
-
+        //System.out.println("Marco menos usado:  " + marcoMenosUsado);
     }
 
     // Ajustar inicio de los bits
@@ -131,11 +125,11 @@ public class RAM {
 
         // Verificar si está en la TP
         if ((this.tlb.buscarReferencia(referencia)) == -1) {
-            System.out.println("No se ha encontrado la página " + referencia + " en la TLB");
-            System.out.println("Buscando la página " + referencia + " en la TP");
+            //System.out.println("No se ha encontrado la página " + referencia + " en la TLB");
+            //System.out.println("Buscando la página " + referencia + " en la TP");
             //Si no está en la TP, se agrega a la TP
             if ((tp.buscarReferencia(referencia)) == -1) {
-                System.out.println("No se ha encontrado la página en la TP" + " Fallo de  pagina " + referencia);
+                //System.out.println("No se ha encontrado la página en la TP" + " Fallo de  pagina " + referencia);
                 this.direcciones += 60;
                 this.datos += 10000000;
                 this.numFallas++;
@@ -148,9 +142,6 @@ public class RAM {
 
                         tp.agregarReferencia(referencia, marcoMenosUsado, true);
                         setNuevaReferencia(tp.buscarReferencia(referencia));
-                        
-
-
                     }
                     // si la RAM todavia tiene marcos disponibles
                     else {
@@ -161,11 +152,10 @@ public class RAM {
                         //Agregar la referencia a la TP
                         tp.agregarReferencia(referencia, marco, false);
                         setNuevaReferencia(tp.buscarReferencia(referencia));
-
                     }
 
                 } catch (Exception e) {
-                     System.out.println("La página " + referencia + " no se ha agregado correctamente a la TP ");
+                    // System.out.println("La página " + referencia + " no se ha agregado correctamente a la TP ");
                 }
 
             }
@@ -174,25 +164,24 @@ public class RAM {
 
                 Integer marco = tp.buscarReferencia(referencia);
                 setNuevaReferencia(tp.buscarReferencia(referencia));
-                System.out.println("Se ha encontrado la pagina " + referencia + " en el marco de RAM " + marco);
+                //System.out.println("Se ha encontrado la pagina " + referencia + " en el marco de RAM " + marco);
                 this.direcciones += 30;
                 this.datos += 30;
                 try {
                     tlb.agregarReferencia(referencia, marco);
-                    System.out.println("Se ha agregado la pagina " + referencia + " a la TLB");
+                    //System.out.println("Se ha agregado la pagina " + referencia + " a la TLB");
                 } catch (Exception e) {
-                    System.out.println("No se ha agregado la pagina " + referencia + " a la TLB");
+                    //System.out.println("No se ha agregado la pagina " + referencia + " a la TLB");
                 }
             }
         // Si está en la TLB
         } else {
             this.direcciones += 2;
             this.datos += 30;
-            System.out.println("Se ha encontrado la página " + referencia + " en la TLB");
+            //System.out.println("Se ha encontrado la página " + referencia + " en la TLB");
             setNuevaReferencia(tlb.buscarReferencia(referencia));
 
         }
-        System.out.println("Despues: " + getNuevaReferencia());
 
     }
 

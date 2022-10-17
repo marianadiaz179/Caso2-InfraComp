@@ -10,10 +10,13 @@ public class ThreadAging extends Thread {
     @Override   
     public void run() {
 
+        //Se repite mientras que sea diferente a -1 (Se cambia al finalizar las referencias)
         while(ram.getNuevaReferencia() != -1)
         {   
-            System.out.println("Aging");
+            //Se ejecuta el algoritmo de envejecimiento
             ram.algoritmoEnvejecimiento();
+
+            //Tiempo que espera para volver a repetirse
             try {
                 Thread.sleep(1);
             } catch (Exception e) {}
