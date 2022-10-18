@@ -1,3 +1,7 @@
+//Mariana Diaz - 202020993
+//Gabriela Vargas - 202013830
+//Juan Nicolás García Esquibel – 201717860
+
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.util.ArrayList;
@@ -44,9 +48,5 @@ public class App {
         envejecimiento.start();
         ThreadLoader cargador = new ThreadLoader(RAM, lista);
         cargador.start();
-
-
-
-
     }
 }
